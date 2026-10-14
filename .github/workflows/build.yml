@@ -1,0 +1,1029 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create project files
+        run: |
+          set -e
+          mkdir -p app/libs
+          base64 -d <<'GLYPH_B64' | tar xJ
+          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
+          MrHEZ/sCAAAAAARZWg==
+          GLYPH_B64
+          cat <<'EOF' > app/src/main/res/values/styles.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+            <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+              <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+              <item name="android:statusBarColor">@android:color/transparent</item>
+              <item name="android:navigationBarColor">@android:color/transparent</item>
+            </style>
+            <style name="ShowTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+              <item name="android:windowIsFloating">true</item>
+              <item name="android:windowIsTranslucent">true</item>
+              <item name="android:windowNoTitle">true</item>
+              <item name="android:windowBackground">@android:color/transparent</item>
+              <item name="android:windowContentOverlay">@null</item>
+              <item name="android:backgroundDimEnabled">false</item>
+              <item name="android:windowAnimationStyle">@null</item>
+              <item name="android:colorBackgroundCacheHint">@null</item>
+              <item name="android:windowFullscreen">false</item>
+            </style>
+          </resources>
+          EOF
+
+          cat <<'EOF' > app/src/main/java/com/glyphcallart/Pattern.kt
+          package com.glyphcallart
+
+          import kotlin.math.sin
+          import kotlin.random.Random
+
+          object Leds {
+            const val A = 11
+            const val B = 5
+            const val C = 20
+            const val A0 = 0
+            const val B0 = 11
+            const val C0 = 16
+            const val TOTAL = 36
+
+            private const val A_START = -14f
+            private const val A_SPAN = 44f
+            private const val B_START = 133f
+            private const val B_SPAN = 18f
+            private const val C_START = 197f
+            private const val C_SPAN = 43f
+
+            private fun n360(a: Float): Float = ((a % 360f) + 360f) % 360f
+
+            fun orbitAngle(t: Float): Float {
+              val starts = floatArrayOf(C_START, C_START + C_SPAN, A_START, A_START + A_SPAN, B_START, B_START + B_SPAN)
+              val lens = floatArrayOf(
+                C_SPAN, n360(A_START - (C_START + C_SPAN)), A_SPAN,
+                n360(B_START - (A_START + A_SPAN)), B_SPAN, n360(C_START - (B_START + B_SPAN))
+              )
+              val weights = floatArrayOf(1f, 0.15f, 1f, 0.15f, 1f, 0.15f)
+              var total = 0f
+              for (i in 0 until 6) total += lens[i] * weights[i]
+              var rem = t * total
+              for (i in 0 until 6) {
+                val span = lens[i] * weights[i]
+                if (rem <= span) return starts[i] + rem / weights[i]
+                rem -= span
+              }
+              return starts[0]
+            }
+
+            fun angle(id: Int): Float = when {
+              id < B0 -> A_START + (id - A0 + 0.5f) * A_SPAN / A
+              id < C0 -> B_START + (id - B0 + 0.5f) * B_SPAN / B
+              else -> C_START + (id - C0 + 0.5f) * C_SPAN / C
+            }
+
+            fun step(id: Int): Float = when {
+              id < B0 -> A_SPAN / A
+              id < C0 -> B_SPAN / B
+              else -> C_SPAN / C
+            }
+          }
+
+          enum class Pattern(val title: String, val desc: String) {
+            MIX("Mix", "Sab auto badalte hain"),
+            ORBIT("Orbit", "Ek dot gol ghumta hai"),
+            TWIN("Twin orbit", "Do dot ulte ghumte hain"),
+            COMET("Comet", "Lambi poonch wali light"),
+            MATRIX("Matrix", "Digital code streams girti hain"),
+            RADAR("Radar", "360° sonar sweep + target blip"),
+            LIGHTNING("Lightning", "Bijli jaisi tez multi-flash"),
+            PENDULUM("Pendulum", "Smooth ghadi jaisa swing"),
+            BOUNCE("Bounce", "Teeno zones mein tez ball"),
+            SUPERNOVA("Supernova", "Charge hokar star blast"),
+            VOICE("Voice bars", "Awaaz jaisi bars"),
+            HEARTBEAT("Heartbeat", "Dhak-dhak dhadkan"),
+            WAVE("Wave", "Lehar teeno zone mein"),
+            FILL("Loader", "Teeno zone bharte-khaali"),
+            SPARKLE("Sparkle", "Random chamak"),
+            PULSE("Pulse", "Saans leti lights"),
+            RAIN("Rain", "Boonden girti hain zones pe"),
+            DNA("DNA", "Do strands twist karte hain"),
+            RING("Ring", "Circle expand-contract"),
+            FIRE("Fire", "Aag jaisi flicker"),
+            VISUALIZER("Visualizer", "Bass / Beats / Vocal progressive"),
+            ZONES("Zone test", "A, B, C ek-ek karke")
+          }
+
+          class Frame(val lit: IntArray, val delayMs: Long, val breathe: Boolean = false)
+
+          class PatternEngine {
+            private var step = 0
+            private var levelA = 6
+            private var levelB = 3
+            private var levelC = 10
+            private var mixElapsed = 0L
+            private var mixIndex = 0
+
+            fun reset() {
+              step = 0
+              mixElapsed = 0L
+              mixIndex = 0
+            }
+
+            fun next(pattern: Pattern): Frame {
+              if (pattern == Pattern.MIX) {
+                val f = next(MIX_LIST[mixIndex])
+                mixElapsed += f.delayMs
+                if (mixElapsed >= 4500L) {
+                  mixElapsed = 0L
+                  mixIndex = (mixIndex + 1) % MIX_LIST.size
+                  step = 0
+                }
+                return f
+              }
+              val s = step
+              step++
+              return when (pattern) {
+                Pattern.ORBIT -> {
+                  val phi = Leds.orbitAngle((s % ORBIT_STEPS).toFloat() / ORBIT_STEPS)
+                  Frame(beam(phi - 3f, phi + 3f), 40L)
+                }
+                Pattern.TWIN -> {
+                  val t = (s % ORBIT_STEPS).toFloat() / ORBIT_STEPS
+                  val p1 = Leds.orbitAngle(t)
+                  val p2 = Leds.orbitAngle((t + 0.5f) % 1f)
+                  Frame(beam(p1 - 3f, p1 + 3f) + beam(p2 - 3f, p2 + 3f), 40L)
+                }
+                Pattern.COMET -> {
+                  val phi = Leds.orbitAngle((s % ORBIT_STEPS).toFloat() / ORBIT_STEPS)
+                  Frame(beam(phi - 45f, phi + 2f), 40L)
+                }
+                Pattern.MATRIX -> {
+                  val l = LinkedHashSet<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val d1 = (s + base * 2) % (n + 4)
+                    val d2 = (s + base + n / 2) % (n + 5)
+                    for (d in intArrayOf(d1, d2)) {
+                      if (d < n) l.add(base + d)
+                      if (d - 1 in 0 until n) l.add(base + d - 1)
+                      if (d - 2 in 0 until n && s % 2 == 0) l.add(base + d - 2)
+                    }
+                  }
+                  Frame(l.toIntArray(), 55L)
+                }
+                Pattern.RADAR -> {
+                  val t = (s % ORBIT_STEPS).toFloat() / ORBIT_STEPS
+                  val sweep = Leds.orbitAngle(t)
+                  val blip = Leds.orbitAngle(0.65f)
+                  val l = beam(sweep - 18f, sweep + 2f).toMutableSet()
+                  if (norm(sweep - blip) < 60f) l.addAll(beam(blip - 4f, blip + 4f).toList())
+                  Frame(l.toIntArray(), 42L)
+                }
+                Pattern.LIGHTNING -> when (s % 12) {
+                  0 -> Frame(IntArray(Leds.C) { Leds.C0 + it }, 45L)
+                  1 -> Frame(IntArray(0), 35L)
+                  2 -> Frame(ALL, 65L)
+                  3 -> Frame(IntArray(Leds.A + Leds.B) { it }, 40L)
+                  4 -> Frame(ALL, 50L)
+                  5, 6 -> Frame(IntArray(Leds.B) { Leds.B0 + it }, 60L)
+                  else -> Frame(IntArray(0), 110L)
+                }
+                Pattern.PENDULUM -> {
+                  val rad = (s % 40) * (Math.PI * 2.0 / 40.0)
+                  val f = ((sin(rad) + 1.0) / 2.0).toFloat()
+                  val l = LinkedHashSet<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val c = idx(f, n)
+                    l.add(base + c)
+                    if (c > 0) l.add(base + c - 1)
+                    if (c < n - 1) l.add(base + c + 1)
+                  }
+                  Frame(l.toIntArray(), 45L)
+                }
+                Pattern.BOUNCE -> {
+                  val f = pingPong(s, 12)
+                  val l = LinkedHashSet<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val i = idx(f, n)
+                    l.add(base + i)
+                    if ((i == 0 || i == n - 1) && n > 2) l.add(base + if (i == 0) 1 else n - 2)
+                  }
+                  Frame(l.toIntArray(), 38L)
+                }
+                Pattern.SUPERNOVA -> {
+                  val phase = s % 20
+                  val l = ArrayList<Int>()
+                  when {
+                    phase < 10 -> {
+                      val sp = phase.toFloat() / 10f
+                      for ((base, n) in ZONE_DEFS) {
+                        val mid = n / 2
+                        val span = (sp * (n / 2)).toInt()
+                        for (i in (mid - span)..(mid + span)) if (i in 0 until n) l.add(base + i)
+                      }
+                      Frame(l.toIntArray(), 55L)
+                    }
+                    phase in 10..12 -> Frame(ALL, 65L)
+                    phase == 13 -> Frame(IntArray(0), 50L)
+                    phase == 14 -> Frame(ALL, 80L)
+                    else -> Frame(IntArray(0), 90L)
+                  }
+                }
+                Pattern.VOICE -> {
+                  levelA = (levelA + Random.nextInt(-3, 4)).coerceIn(1, Leds.A)
+                  levelB = (levelB + Random.nextInt(-1, 2)).coerceIn(1, Leds.B)
+                  levelC = (levelC + Random.nextInt(-5, 6)).coerceIn(1, Leds.C)
+                  val lit = IntArray(levelA + levelB + levelC)
+                  var k = 0
+                  for (i in 0 until levelA) lit[k++] = Leds.A0 + Leds.A - 1 - i
+                  for (i in 0 until levelB) lit[k++] = Leds.B0 + i
+                  for (i in 0 until levelC) lit[k++] = Leds.C0 + i
+                  Frame(lit, 110L)
+                }
+                Pattern.HEARTBEAT -> when (s % 4) {
+                  0, 2 -> Frame(ALL, 130L)
+                  1 -> Frame(IntArray(0), 100L)
+                  else -> Frame(IntArray(0), 750L)
+                }
+                Pattern.WAVE -> {
+                  val f = pingPong(s, 20)
+                  val l = LinkedHashSet<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val i = idx(f, n)
+                    l.add(base + i)
+                    if (i > 0) l.add(base + i - 1)
+                  }
+                  Frame(l.toIntArray(), 55L)
+                }
+                Pattern.FILL -> {
+                  val g = pingPong(s, 24)
+                  val l = ArrayList<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val c = ((g * n).toInt() + 1).coerceIn(1, n)
+                    for (i in 0 until c) l.add(base + i)
+                  }
+                  Frame(l.toIntArray(), 55L)
+                }
+                Pattern.SPARKLE -> {
+                  val l = ArrayList<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val want = if (n == Leds.B) 2 else if (n == Leds.A) 3 else 5
+                    val pick = HashSet<Int>()
+                    while (pick.size < want) pick.add(Random.nextInt(n))
+                    for (p in pick) l.add(base + p)
+                  }
+                  Frame(l.toIntArray(), 130L)
+                }
+                Pattern.PULSE -> Frame(ALL, 1500L, true)
+                Pattern.RAIN -> {
+                  val l = ArrayList<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val pos = (s + base) % (n + 3)
+                    if (pos < n) l.add(base + pos)
+                    if (pos > 0 && pos - 1 < n) l.add(base + pos - 1)
+                  }
+                  Frame(l.toIntArray(), 70L)
+                }
+                Pattern.DNA -> {
+                  val t = (s % ORBIT_STEPS).toFloat() / ORBIT_STEPS
+                  val p1 = Leds.orbitAngle(t)
+                  val p2 = Leds.orbitAngle((1f - t) % 1f)
+                  Frame(beam(p1 - 8f, p1 + 2f) + beam(p2 - 8f, p2 + 2f), 45L)
+                }
+                Pattern.RING -> {
+                  val width = 6f + pingPong(s, 18) * 28f
+                  Frame(beam(180f - width / 2f, 180f + width / 2f), 50L)
+                }
+                Pattern.FIRE -> {
+                  val l = ArrayList<Int>()
+                  for ((base, n) in ZONE_DEFS) {
+                    val h = Random.nextInt(1, (n * 0.7f).toInt().coerceAtLeast(2) + 1)
+                    for (i in 0 until h) {
+                      val idx = if (base == Leds.A0) n - 1 - i else i
+                      if (Random.nextFloat() > 0.25f) l.add(base + idx)
+                    }
+                  }
+                  Frame(l.toIntArray(), 90L)
+                }
+                Pattern.VISUALIZER -> Frame(IntArray(0), 50L)
+                Pattern.ZONES -> {
+                  val (base, n) = ZONE_DEFS[s % 3]
+                  Frame(IntArray(n) { base + it }, 1800L)
+                }
+                Pattern.MIX -> Frame(IntArray(0), 100L)
+              }
+            }
+
+            private fun pingPong(s: Int, period: Int): Float {
+              val p = s % (2 * period)
+              val k = if (p <= period) p else 2 * period - p
+              return k.toFloat() / period
+            }
+
+            private fun idx(f: Float, n: Int): Int = (f * n).toInt().coerceIn(0, n - 1)
+            private fun norm(a: Float): Float = ((a % 360f) + 360f) % 360f
+
+            private fun beam(from: Float, to: Float): IntArray {
+              val len = norm(to - from)
+              val l = ArrayList<Int>()
+              for (id in 0 until Leds.TOTAL) if (norm(Leds.angle(id) - from) <= len) l.add(id)
+              return l.toIntArray()
+            }
+
+            companion object {
+              private const val ORBIT_STEPS = 48
+              private val ALL = IntArray(Leds.TOTAL) { it }
+              private val ZONE_DEFS = listOf(Pair(Leds.A0, Leds.A), Pair(Leds.B0, Leds.B), Pair(Leds.C0, Leds.C))
+              private val MIX_LIST = listOf(
+                Pattern.ORBIT, Pattern.TWIN, Pattern.COMET, Pattern.MATRIX,
+                Pattern.RADAR, Pattern.LIGHTNING, Pattern.PENDULUM, Pattern.BOUNCE,
+                Pattern.SUPERNOVA, Pattern.VOICE, Pattern.HEARTBEAT, Pattern.WAVE,
+                Pattern.FILL, Pattern.SPARKLE, Pattern.RAIN, Pattern.DNA,
+                Pattern.RING, Pattern.FIRE
+              )
+            }
+          }
+          EOF
+          cat <<'EOF' > app/src/main/java/com/glyphcallart/MainActivity.kt
+          package com.glyphcallart
+
+          import android.Manifest
+          import android.app.Activity
+          import android.app.ActivityManager
+          import android.content.ClipData
+          import android.content.ClipboardManager
+          import android.content.Intent
+          import android.content.SharedPreferences
+          import android.content.pm.PackageManager
+          import android.graphics.Color
+          import android.graphics.Typeface
+          import android.graphics.drawable.GradientDrawable
+          import android.net.Uri
+          import android.os.Bundle
+          import android.provider.Settings
+          import android.view.Gravity
+          import android.view.View
+          import android.view.ViewGroup
+          import android.view.WindowInsets
+          import android.widget.LinearLayout
+          import android.widget.ScrollView
+          import android.widget.TextView
+
+          class MainActivity : Activity() {
+            private lateinit var prefs: SharedPreferences
+            private lateinit var scroll: ScrollView
+            private lateinit var preview: GlyphPreviewView
+            private lateinit var nowPlaying: TextView
+            private lateinit var statusView: TextView
+            private lateinit var testButton: TextView
+            private lateinit var watchButton: TextView
+            private var controller: GlyphController? = null
+            private var selected = Pattern.ORBIT
+            private val cards = ArrayList<Pair<Pattern, LinearLayout>>()
+            private val checks = ArrayList<Pair<TextView, () -> Boolean>>()
+
+            override fun onCreate(savedInstanceState: Bundle?) {
+              super.onCreate(savedInstanceState)
+              window.statusBarColor = Color.TRANSPARENT
+              window.navigationBarColor = Color.TRANSPARENT
+              prefs = getSharedPreferences("glyph", MODE_PRIVATE)
+              selected = loadPattern()
+
+              val col = LinearLayout(this)
+              col.orientation = LinearLayout.VERTICAL
+              col.setPadding(dp(20), dp(24), dp(20), dp(40))
+
+              scroll = ScrollView(this)
+              scroll.background = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(BG_TOP, BG_MID, BG_BOT))
+              scroll.isVerticalScrollBarEnabled = false
+              scroll.addView(col)
+              scroll.setOnApplyWindowInsetsListener { v, insets ->
+                val bars = insets.getInsets(WindowInsets.Type.systemBars())
+                v.setPadding(0, bars.top, 0, bars.bottom)
+                insets
+              }
+
+              val badge = label("✦  NOTHING OS • LIQUID GLASS", 10f, GLASS_HI, bold = true, mono = true)
+              badge.letterSpacing = 0.14f
+              badge.setPadding(dp(12), dp(6), dp(12), dp(6))
+              badge.background = glass(GLASS_TOP, GLASS_BOT, 50, GLASS_BDR_HI, 1)
+              val bw = LinearLayout(this)
+              bw.addView(badge, lp(WRAP, WRAP))
+              col.addView(bw, lp(MATCH, WRAP, b = 10))
+
+              val title = label("Glyph Call Art", 28f, TEXT, bold = true)
+              title.letterSpacing = 0.02f
+              col.addView(title)
+              col.addView(label("Call aane par piche ki light mein liquid art", 14f, MUTED), lp(MATCH, WRAP, t = 4))
+
+              val pCard = LinearLayout(this)
+              pCard.orientation = LinearLayout.VERTICAL
+              pCard.gravity = Gravity.CENTER_HORIZONTAL
+              pCard.setPadding(dp(14), dp(14), dp(14), dp(16))
+              pCard.background = glass(SHOW_TOP, SHOW_BOT, 28, GLASS_BDR_HI, 1)
+              pCard.elevation = dp(10).toFloat()
+
+              preview = GlyphPreviewView(this)
+              preview.background = glass(Color.parseColor("#6605070F"), Color.parseColor("#9905070F"), 22, GLASS_BDR, 1)
+              preview.setPattern(selected)
+              pCard.addView(preview, lp(MATCH, dp(220)))
+
+              nowPlaying = label("", 12f, Color.WHITE, bold = true, mono = true)
+              nowPlaying.gravity = Gravity.CENTER
+              nowPlaying.letterSpacing = 0.12f
+              nowPlaying.setPadding(dp(16), dp(6), dp(16), dp(6))
+              nowPlaying.background = glass(ACC_TOP, ACC_BOT, 40, ACC_BDR, 1)
+              pCard.addView(nowPlaying, lp(WRAP, WRAP, t = 12))
+
+              val note = label("A = right arc  •  B = neeche-left  •  C = upar-left", 11f, MUTED)
+              note.gravity = Gravity.CENTER
+              pCard.addView(note, lp(MATCH, WRAP, t = 8))
+              col.addView(pCard, lp(MATCH, WRAP, t = 18))
+
+              col.addView(sectionTitle("PATTERN CHUNO"))
+              val all = Pattern.values()
+              var i = 0
+              while (i < all.size) {
+                val row = LinearLayout(this)
+                row.orientation = LinearLayout.HORIZONTAL
+                for (j in 0..1) {
+                  if (i + j < all.size) {
+                    row.addView(card(all[i + j]), lp(0, WRAP, l = if (j == 1) 6 else 0, r = if (j == 0) 6 else 0, b = 12, weight = 1f))
+                  } else {
+                    row.addView(View(this), lp(0, 1, weight = 1f))
+                  }
+                }
+                col.addView(row, lp(MATCH, WRAP))
+                i += 2
+              }
+              select(selected)
+
+              col.addView(sectionTitle("LIVE TEST"))
+              testButton = pill("Glyph pe test karo", true) { if (controller == null) startTest() else stopTest() }
+              col.addView(testButton, lp(MATCH, WRAP))
+
+              col.addView(sectionTitle("CALL PAR AUTO CHALAO"))
+              val perms = arrayOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.RECORD_AUDIO)
+              col.addView(
+                stepRow("1", "Permissions", "Phone state + notification + mic (Visualizer ke liye)", { perms.all { granted(it) } }) {
+                  requestPermissions(perms, REQ_PERMS)
+                },
+                lp(MATCH, WRAP, b = 10)
+              )
+              col.addView(
+                stepRow("2", "Overlay permission", "Call aane par app apne aap khulne ke liye", { Settings.canDrawOverlays(this) }) {
+                  startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+                },
+                lp(MATCH, WRAP, b = 10)
+              )
+              watchButton = pill("Call watcher chalu karo", true) { toggleWatcher() }
+              col.addView(watchButton, lp(MATCH, WRAP, t = 4))
+
+              col.addView(sectionTitle("AGAR GLYPH NA CHALE"))
+              val dbg = LinearLayout(this)
+              dbg.orientation = LinearLayout.VERTICAL
+              dbg.setPadding(dp(18), dp(16), dp(18), dp(16))
+              dbg.background = glass(GLASS_TOP, GLASS_BOT, 22, GLASS_BDR, 1)
+              dbg.addView(label("Zyadatar phones pe iski zaroorat nahi padti. Test mein light na jale toh ye command chalao (Shizuku shell ya adb se, 48 ghante tak chalti hai):", 13f, MUTED))
+              val cmdBox = label(DEBUG_CMD, 12f, GLASS_HI, mono = true)
+              cmdBox.setPadding(dp(12), dp(10), dp(12), dp(10))
+              cmdBox.background = glass(Color.parseColor("#55000000"), Color.parseColor("#77000000"), 14, GLASS_BDR, 1)
+              dbg.addView(cmdBox, lp(MATCH, WRAP, t = 10))
+              col.addView(dbg, lp(MATCH, WRAP))
+
+              col.addView(pill("Command copy karo", false) {
+                getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("glyph", DEBUG_CMD))
+                setStatus("Command copy ho gayi ✓")
+              }, lp(MATCH, WRAP, t = 10))
+
+              statusView = label("", 13f, GLASS_HI)
+              statusView.gravity = Gravity.CENTER
+              col.addView(statusView, lp(MATCH, WRAP, t = 18))
+              setContentView(scroll)
+            }
+
+            override fun onResume() { super.onResume(); preview.start(); refresh() }
+            override fun onPause() { stopTest(); preview.stop(); super.onPause() }
+
+            private fun select(p: Pattern) {
+              selected = p
+              prefs.edit().putString("pattern", p.name).apply()
+              preview.setPattern(p)
+              nowPlaying.text = "●  ${p.title.uppercase()}"
+              controller?.setPattern(p)
+              for ((pat, card) in cards) {
+                card.background = if (pat == p) glass(SEL_TOP, SEL_BOT, 22, ACC_BDR, 2) else glass(GLASS_TOP, GLASS_BOT, 22, GLASS_BDR, 1)
+                card.elevation = dp(if (pat == p) 8 else 2).toFloat()
+              }
+            }
+
+            private fun startTest() {
+              if (selected == Pattern.VISUALIZER && !granted(Manifest.permission.RECORD_AUDIO)) {
+                requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_PERMS)
+                setStatus("Visualizer ke liye mic permission do, phir dubara test dabao")
+                return
+              }
+              val c = GlyphController(this) { msg -> setStatus(msg) }
+              controller = c
+              c.start(selected)
+              testButton.text = "Test roko"
+              stylePill(testButton, false)
+            }
+
+            private fun stopTest() {
+              controller?.stop()
+              controller = null
+              if (::testButton.isInitialized) { testButton.text = "Glyph pe test karo"; stylePill(testButton, true) }
+            }
+
+            private fun toggleWatcher() {
+              if (watcherRunning()) {
+                stopService(Intent(this, CallWatcherService::class.java))
+                setStatus("Call watcher band")
+              } else {
+                if (!granted(Manifest.permission.READ_PHONE_STATE)) { setStatus("Pehle step 1 mein permissions do"); return }
+                startForegroundService(Intent(this, CallWatcherService::class.java))
+                setStatus("Call watcher chalu. Ab kisi ko call karo.")
+              }
+              scroll.postDelayed({ refresh() }, 500)
+            }
+
+            @Suppress("DEPRECATION")
+            private fun watcherRunning(): Boolean =
+              getSystemService(ActivityManager::class.java).getRunningServices(50).any { it.service.className == CallWatcherService::class.java.name }
+
+            private fun granted(perm: String) = checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED
+
+            private fun refresh() {
+              for ((v, done) in checks) {
+                if (done()) {
+                  v.text = "✓ Ho gaya"; v.setTextColor(GREEN)
+                  v.background = glass(Color.parseColor("#3320C997"), Color.parseColor("#1820C997"), 30, GREEN, 1)
+                } else {
+                  v.text = "Karo →"; v.setTextColor(Color.WHITE)
+                  v.background = glass(ACC_TOP, ACC_BOT, 30, ACC_BDR, 1)
+                }
+              }
+              val run = watcherRunning()
+              watchButton.text = if (run) "Call watcher band karo" else "Call watcher chalu karo"
+              stylePill(watchButton, !run)
+            }
+
+            private fun setStatus(msg: String) { runOnUiThread { if (::statusView.isInitialized) statusView.text = msg } }
+            private fun loadPattern(): Pattern = Pattern.values().firstOrNull { it.name == prefs.getString("pattern", Pattern.ORBIT.name) } ?: Pattern.ORBIT
+            private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
+
+            private fun lp(w: Int, h: Int, l: Int = 0, t: Int = 0, r: Int = 0, b: Int = 0, weight: Float = 0f): LinearLayout.LayoutParams {
+              val p = LinearLayout.LayoutParams(w, h, weight)
+              p.setMargins(dp(l), dp(t), dp(r), dp(b))
+              return p
+            }
+
+            private fun glass(top: Int, bot: Int, radDp: Int, stroke: Int = 0, strokeDp: Int = 0): GradientDrawable {
+              val g = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(top, bot))
+              g.cornerRadius = dp(radDp).toFloat()
+              if (strokeDp > 0) g.setStroke(dp(strokeDp), stroke)
+              return g
+            }
+
+            private fun label(s: String, sp: Float, color: Int, bold: Boolean = false, mono: Boolean = false): TextView {
+              val t = TextView(this)
+              t.text = s; t.textSize = sp; t.setTextColor(color)
+              t.typeface = if (mono) Typeface.MONOSPACE else Typeface.DEFAULT
+              if (bold) t.setTypeface(t.typeface, Typeface.BOLD)
+              return t
+            }
+
+            private fun sectionTitle(s: String): TextView {
+              val t = label(s, 11f, GLASS_HI, bold = true, mono = true)
+              t.letterSpacing = 0.18f
+              t.layoutParams = lp(MATCH, WRAP, t = 28, b = 12)
+              return t
+            }
+
+            private fun stylePill(t: TextView, primary: Boolean) {
+              t.setTextColor(if (primary) Color.WHITE else TEXT)
+              t.background = if (primary) glass(ACC_TOP, ACC_BOT, 30, ACC_BDR, 1) else glass(GLASS_TOP, GLASS_BOT, 30, GLASS_BDR_HI, 1)
+              t.elevation = dp(if (primary) 6 else 2).toFloat()
+            }
+
+            private fun pill(s: String, primary: Boolean, onClick: () -> Unit): TextView {
+              val t = label(s, 15f, TEXT, bold = true)
+              t.gravity = Gravity.CENTER
+              t.setPadding(dp(18), dp(15), dp(18), dp(15))
+              stylePill(t, primary)
+              t.isClickable = true
+              t.setOnClickListener { onClick() }
+              return t
+            }
+
+            private fun card(p: Pattern): LinearLayout {
+              val c = LinearLayout(this)
+              c.orientation = LinearLayout.VERTICAL
+              c.setPadding(dp(16), dp(15), dp(16), dp(15))
+              c.addView(label(p.title, 15f, TEXT, bold = true))
+              val d = label(p.desc, 12f, MUTED)
+              d.minLines = 2; d.maxLines = 2
+              c.addView(d, lp(MATCH, WRAP, t = 4))
+              c.isClickable = true
+              c.setOnClickListener { select(p) }
+              cards.add(Pair(p, c))
+              return c
+            }
+
+            private fun stepRow(num: String, title: String, sub: String, done: () -> Boolean, onClick: () -> Unit): LinearLayout {
+              val row = LinearLayout(this)
+              row.orientation = LinearLayout.HORIZONTAL
+              row.gravity = Gravity.CENTER_VERTICAL
+              row.setPadding(dp(16), dp(15), dp(16), dp(15))
+              row.background = glass(GLASS_TOP, GLASS_BOT, 22, GLASS_BDR, 1)
+              val n = label(num, 15f, Color.WHITE, bold = true, mono = true)
+              n.gravity = Gravity.CENTER
+              n.background = glass(ACC_TOP, ACC_BOT, 50, ACC_BDR, 1)
+              row.addView(n, lp(dp(32), dp(32), r = 12))
+              val texts = LinearLayout(this)
+              texts.orientation = LinearLayout.VERTICAL
+              texts.addView(label(title, 15f, TEXT, bold = true))
+              texts.addView(label(sub, 12f, MUTED), lp(MATCH, WRAP, t = 2))
+              row.addView(texts, lp(0, WRAP, weight = 1f))
+              val status = label("", 12f, Color.WHITE, bold = true)
+              status.setPadding(dp(12), dp(6), dp(12), dp(6))
+              row.addView(status, lp(WRAP, WRAP, l = 8))
+              checks.add(Pair(status, done))
+              row.isClickable = true
+              row.setOnClickListener { onClick() }
+              return row
+            }
+
+            companion object {
+              private const val REQ_PERMS = 10
+              private const val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
+              private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
+              private const val DEBUG_CMD = "settings put global nt_glyph_interface_debug_enable 1"
+              private val BG_TOP = Color.parseColor("#080B1A")
+              private val BG_MID = Color.parseColor("#11172E")
+              private val BG_BOT = Color.parseColor("#180D24")
+              private val SHOW_TOP = Color.parseColor("#38FFFFFF")
+              private val SHOW_BOT = Color.parseColor("#14FFFFFF")
+              private val GLASS_TOP = Color.parseColor("#29FFFFFF")
+              private val GLASS_BOT = Color.parseColor("#0FFFFFFF")
+              private val SEL_TOP = Color.parseColor("#4DFF2E54")
+              private val SEL_BOT = Color.parseColor("#1FFF2E54")
+              private val GLASS_BDR = Color.parseColor("#38FFFFFF")
+              private val GLASS_BDR_HI = Color.parseColor("#66FFFFFF")
+              private val GLASS_HI = Color.parseColor("#B8D4FF")
+              private val ACC_TOP = Color.parseColor("#F2FF2E54")
+              private val ACC_BOT = Color.parseColor("#D9D71921")
+              private val ACC_BDR = Color.parseColor("#99FF8FA3")
+              private val TEXT = Color.parseColor("#F8FAFF")
+              private val MUTED = Color.parseColor("#A6B0C8")
+              private val GREEN = Color.parseColor("#42F5A1")
+            }
+          }
+          EOF
+
+          git clone --depth 1 https://github.com/Nothing-Developer-Programme/Glyph-Developer-Kit.git "$RUNNER_TEMP/gdk"
+          cp "$RUNNER_TEMP/gdk/sdk/glyph-matrix-sdk-2.0.aar" app/libs/
+          test -f app/src/main/java/com/glyphcallart/Pattern.kt
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GlyphCallArt-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
